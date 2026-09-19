@@ -1,7 +1,5 @@
-# riri25.github.io
+# 25 for 25
 riazul's birthday site!
-
-# 25 for 25 — birthday site
 
 A one-page birthday site: a click-through intro, then a grid of polaroids —
 one per friend — each with a photo, a favourite memory, a song, and
