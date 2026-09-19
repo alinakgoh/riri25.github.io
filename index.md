@@ -1,0 +1,748 @@
+layout: null
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>25 for you</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-1: #fffaf0;
+      --bg-2: #fffaf0;
+      --card: #fffdf8;
+      --ink: #2e2a24;
+      --ink-dim: rgba(46,42,36,0.6);
+      --coral: #ff8c69;
+      --gold: #ffc857;
+      --rose: #ff6f91;
+      --seafoam: #5fd1c0;
+      --lavender: #b296ff;
+      --accent: #2f7d6f;
+    }
+
+    *{ box-sizing: border-box; }
+
+    html, body{
+      margin:0;
+      padding:0;
+      background: var(--bg-1);
+      color: var(--ink);
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1, h2, .display{
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    /* ---------- Intro sequence ---------- */
+
+    .intro-screen{
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 28px;
+      background: var(--bg-1);
+      cursor: pointer;
+      transition: opacity 0.45s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .intro-screen.hidden{
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .intro-screen{ transition: none; }
+    }
+
+    .intro-content{
+      width: 100%;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .intro-text{
+      font-size: clamp(1rem, 4.5vw, 1.3rem);
+      font-weight: 500;
+      line-height: 1.45;
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .intro-text.fade{
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .intro-text{ transition: none; }
+    }
+
+    .intro-dots{
+      display: flex;
+      gap: 6px;
+      margin-top: 22px;
+    }
+
+    .intro-dots span{
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(46,42,36,0.18);
+    }
+
+    .intro-dots span.active{
+      background: var(--ink);
+    }
+
+    .intro-footer{
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      margin-top: 22px;
+    }
+
+    .intro-back{
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--ink-dim);
+      font-size: 16px;
+      line-height: 1;
+      padding: 6px;
+      margin: 0;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .intro-back.visible{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .intro-hint{
+      margin: 0;
+      font-size: 11px;
+      color: var(--ink-dim);
+      text-align: center;
+    }
+
+    @media (min-width: 640px){
+      .intro-content{ max-width: 380px; }
+    }
+
+    /* ---------- Hero ---------- */
+
+    .hero{
+      padding: 48px 20px 20px;
+      text-align: center;
+    }
+
+    .hero .eyebrow{
+      font-size: 11px;
+      color: var(--ink-dim);
+      margin: 0 0 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1{
+      font-size: clamp(1.6rem, 8vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .hero p.sub{
+      max-width: 260px;
+      margin: 10px auto 0;
+      font-size: 12px;
+      color: var(--ink-dim);
+      line-height: 1.5;
+    }
+
+    /* ---------- Polaroid wall ---------- */
+
+    .field{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px 14px;
+      width: 100%;
+      max-width: 720px;
+      margin: 28px auto 0;
+      padding: 0 4px 48px;
+    }
+
+    @media (min-width: 480px) and (max-width: 639px){
+      .field{ grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (min-width: 640px){
+      .field{
+        grid-template-columns: repeat(5, 1fr);
+        gap: 30px 22px;
+        margin-top: 36px;
+      }
+    }
+
+    .polaroid{
+      position: relative;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid rgba(46,42,36,0.06);
+      border-radius: 3px;
+      padding: 7px 7px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      box-shadow:
+        0 1px 1px rgba(35,25,10,0.22),
+        0 8px 12px -4px rgba(35,25,10,0.28),
+        0 22px 34px -12px rgba(35,25,10,0.4);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .polaroid::before{
+      content: "";
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      width: 42px;
+      height: 15px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 3px 4px rgba(35,25,10,0.18);
+      transform: translateX(-50%) rotate(-3deg);
+      pointer-events: none;
+    }
+
+    .polaroid:active{ filter: brightness(0.97); }
+
+    .polaroid:focus-visible{
+      outline: 3px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    .polaroid-photo{
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 1px;
+      background: linear-gradient(135deg, var(--lavender), var(--seafoam));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .polaroid-photo img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .polaroid-photo .fallback-initial{
+      font-weight: 700;
+      color: rgba(20,14,38,0.55);
+    }
+
+    .polaroid-caption{
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .polaroid.opened{
+      opacity: 0.55;
+    }
+
+    .polaroid.opened::after{
+      content: "";
+      position: absolute;
+      bottom: 7px;
+      right: 9px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ink);
+    }
+
+    /* ---------- Modal ---------- */
+
+    .modal-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(10,8,20,0.72);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.show{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal{
+      background: linear-gradient(160deg, #fffdf8, #f2e8d2);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px 24px 0 0;
+      padding: 28px 24px 36px;
+      transform: translateY(24px);
+      transition: transform 0.25s ease;
+      max-height: 82vh;
+      overflow-y: auto;
+      box-shadow: 0 -8px 30px rgba(35,25,10,0.25);
+    }
+
+    .modal-backdrop.show .modal{
+      transform: translateY(0);
+    }
+
+    .modal .num{
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 10px;
+    }
+
+    .modal p.message{
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 18px;
+      white-space: pre-wrap;
+      color: var(--ink);
+    }
+
+    .modal .media-block{
+      margin-bottom: 16px;
+    }
+
+    .modal .media-block iframe{
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .modal a.song-link{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .modal audio{
+      width: 100%;
+    }
+
+    .modal .close-btn{
+      display: block;
+      margin: 20px auto 0;
+      background: rgba(46,42,36,0.08);
+      color: var(--ink);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    @media (min-width: 640px){
+      .hero{ padding: 72px 20px 24px; }
+      .hero p.sub{ max-width: 340px; font-size: 13px; }
+
+      .modal-backdrop{ align-items: center; }
+      .modal{
+        border-radius: 24px;
+        transform: translateY(12px) scale(0.98);
+      }
+      .modal-backdrop.show .modal{
+        transform: translateY(0) scale(1);
+      }
+      .modal p.message{ font-size: 15px; }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="intro-screen" id="introScreen" role="button" tabindex="0" aria-label="Tap to continue">
+    <div class="intro-content">
+      <p class="intro-text" id="introText"></p>
+      <div class="intro-dots" id="introDots"></div>
+      <div class="intro-footer">
+        <button class="intro-back" id="introBack" type="button" aria-label="Go back">←</button>
+        <p class="intro-hint" id="introHint">tap to continue</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1 id="heroName" class="display">25 for 25</h1>
+    <p class="sub" id="heroSub">happy birthday riazul!</p>
+  </div>
+
+  <div class="field" id="field"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalNum">
+      <p class="num" id="modalNum"></p>
+      <p class="message" id="modalMessage"></p>
+      <div class="media-block" id="modalMedia"></div>
+      <button class="close-btn" id="modalClose">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const BIRTHDAY_NAME = "Riazul";
+    const PHOTO_FOLDER = "photos/";
+
+    const FRIENDS = [
+      { name: "Friend 1", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 2", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 3", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 4", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 5", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 6", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 7", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 8", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 9", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 10", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 11", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 12", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 13", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 14", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 15", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 16", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 17", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 18", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 19", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 20", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 21", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 22", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 23", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 24", memory: "Write their favourite memory here.", song: "", voice: "" },
+      { name: "Friend 25", memory: "Write their favourite memory here.", song: "", voice: "" }
+    ];
+
+    const INTRO = [
+      `hey riazul`,
+      `a little birdie told me you're 25`,
+      `how's that pre-frontal cortex feeling?`,
+      `you don't have to answer that.`,
+      `anyway...`,
+      `it turns out some friends and loved ones have birthday wishes to share with you...`,
+      `25 to be exact.`,
+      `if you just said "wtf" for the tenth time, we're right on track`,
+      `anyway, ON TO THE MESSAGES!`,
+      `oh and -`,
+      `happy birthday baby boy. we love you so endlessly and cannot wait to cheer you on in all the amazing things you'll do in your next lap around the sun.`
+    ];
+
+    document.getElementById('heroSub').textContent = `happy birthday ${BIRTHDAY_NAME.toLowerCase()}!`;
+
+    const introScreen = document.getElementById('introScreen');
+    const introText = document.getElementById('introText');
+    const introHint = document.getElementById('introHint');
+    const introDots = document.getElementById('introDots');
+    const introBack = document.getElementById('introBack');
+    let introIndex = 0;
+
+    INTRO.forEach(() => {
+      const dot = document.createElement('span');
+      introDots.appendChild(dot);
+    });
+
+    const prefersReducedMotionForIntro =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function renderIntro(){
+      introText.textContent = INTRO[introIndex];
+      introHint.textContent =
+        introIndex === INTRO.length - 1
+          ? 'tap to open your messages'
+          : 'tap to continue';
+
+      Array.from(introDots.children).forEach((dot, i) => {
+        dot.classList.toggle('active', i === introIndex);
+      });
+
+      introBack.classList.toggle('visible', introIndex > 0);
+    }
+
+    function stepIntro(newIndex){
+      if(prefersReducedMotionForIntro){
+        introIndex = newIndex;
+        renderIntro();
+        return;
+      }
+
+      introText.classList.add('fade');
+
+      setTimeout(() => {
+        introIndex = newIndex;
+        renderIntro();
+        introText.classList.remove('fade');
+      }, 220);
+    }
+
+    function advanceIntro(){
+      if(introIndex >= INTRO.length - 1){
+        introScreen.classList.add('hidden');
+        return;
+      }
+
+      stepIntro(introIndex + 1);
+    }
+
+    function goBackIntro(){
+      if(introIndex <= 0) return;
+      stepIntro(introIndex - 1);
+    }
+
+    introBack.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goBackIntro();
+    });
+
+    introScreen.addEventListener('click', advanceIntro);
+
+    introScreen.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight'){
+        e.preventDefault();
+        advanceIntro();
+      } else if(e.key === 'ArrowLeft'){
+        e.preventDefault();
+        goBackIntro();
+      }
+    });
+
+    renderIntro();
+
+    const field = document.getElementById('field');
+    const opened = new Set();
+
+    function spotifyEmbed(url){
+      const match = url.match(
+        /open\.spotify\.com\/(track|album|playlist)\/([a-zA-Z0-9]+)/
+      );
+
+      if(!match) return null;
+
+      return `
+        <iframe
+          src="https://open.spotify.com/embed/${match[1]}/${match[2]}"
+          height="80"
+          allow="encrypted-media"
+          loading="lazy">
+        </iframe>
+      `;
+    }
+
+    function youtubeEmbed(url){
+      let id = null;
+
+      let match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      if(match) id = match[1];
+
+      if(!id){
+        match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+        if(match) id = match[1];
+      }
+
+      if(!id){
+        match = url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+        if(match) id = match[1];
+      }
+
+      if(!id) return null;
+
+      return `
+        <iframe
+          src="https://www.youtube.com/embed/${id}"
+          height="200"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      `;
+    }
+
+    function buildMedia(item){
+      let html = '';
+
+      if(item.song){
+        const embed = spotifyEmbed(item.song) || youtubeEmbed(item.song);
+
+        if(embed){
+          html += `<div class="media-block">${embed}</div>`;
+        } else {
+          html += `
+            <div class="media-block">
+              <a
+                class="song-link"
+                href="${item.song}"
+                target="_blank"
+                rel="noopener noreferrer">
+                Listen to the song ↗
+              </a>
+            </div>
+          `;
+        }
+      }
+
+      if(item.voice){
+        html += `
+          <div class="media-block">
+            <audio controls src="${item.voice}"></audio>
+          </div>
+        `;
+      }
+
+      return html;
+    }
+
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalNum = document.getElementById('modalNum');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalMedia = document.getElementById('modalMedia');
+    const closeBtn = document.getElementById('modalClose');
+
+    function openFriend(index, btn){
+      const item = FRIENDS[index];
+
+      modalNum.textContent = item.name;
+      modalMessage.textContent = item.memory;
+      modalMedia.innerHTML = buildMedia(item);
+      backdrop.classList.add('show');
+
+      if(!opened.has(index)){
+        opened.add(index);
+        btn.classList.add('opened');
+      }
+    }
+
+    function closeModal(){
+      backdrop.classList.remove('show');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    backdrop.addEventListener('click', (e) => {
+      if(e.target === backdrop){
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape'){
+        closeModal();
+      }
+    });
+
+    function attachPhoto(container, name){
+      const exts = ['jpg', 'jpeg', 'png', 'webp'];
+      const encodedName = encodeURIComponent(name);
+      const img = document.createElement('img');
+
+      img.alt = name;
+      let attempt = 0;
+
+      function tryNext(){
+        if(attempt >= exts.length){
+          img.remove();
+
+          const fallback = document.createElement('span');
+          fallback.className = 'fallback-initial';
+          fallback.textContent =
+            (name.trim()[0] || '?').toUpperCase();
+
+          fallback.style.fontSize =
+            Math.max(16, Math.round(container.clientWidth * 0.32)) + 'px';
+
+          container.appendChild(fallback);
+          return;
+        }
+
+        img.src = `${PHOTO_FOLDER}${encodedName}.${exts[attempt]}`;
+        attempt++;
+      }
+
+      img.addEventListener('error', tryNext);
+      container.appendChild(img);
+      tryNext();
+    }
+
+    FRIENDS.forEach((item, i) => {
+      const btn = document.createElement('button');
+
+      btn.className = 'polaroid';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', `Open ${item.name}'s photo`);
+      btn.addEventListener('click', () => openFriend(i, btn));
+
+      const photo = document.createElement('span');
+      photo.className = 'polaroid-photo';
+      attachPhoto(photo, item.name);
+
+      const caption = document.createElement('span');
+      caption.className = 'polaroid-caption';
+      caption.textContent = item.name;
+
+      btn.appendChild(photo);
+      btn.appendChild(caption);
+      field.appendChild(btn);
+
+      const rotation = Math.sin(i * 17.233) * 4;
+      btn.style.transform = `rotate(${rotation}deg)`;
+    });
+  </script>
+
+</body>
+</html>
