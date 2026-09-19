@@ -1,4 +1,7 @@
+</> YAML
+---
 layout: null
+---
 
 <!DOCTYPE html>
 
