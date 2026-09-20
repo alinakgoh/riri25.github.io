@@ -1,22 +1,11 @@
-</> YAML
----
 layout: null
----
 
-<!DOCTYPE html>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>25 for you</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
+<style>
+:root{
       --bg-1: #fffaf0;
       --bg-2: #fffaf0;
       --card: #fffdf8;
@@ -60,7 +49,7 @@ layout: null
       padding: 40px 28px;
       background: var(--bg-1);
       cursor: pointer;
-      transition: opacity 0.45s ease;
+      transition: opacity 0.30s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -88,7 +77,7 @@ layout: null
       width: 100%;
       text-align: center;
       margin: 0;
-      transition: opacity 0.22s ease, transform 0.22s ease;
+      transition: opacity 0.15s ease, transform 0.15s ease;
     }
 
     .intro-text.fade{
@@ -149,6 +138,27 @@ layout: null
     .intro-back.visible{
       opacity: 1;
       pointer-events: auto;
+    }
+
+    .intro-skip{
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--ink-dim);
+      font-size: 11px;
+      line-height: 1;
+      padding: 6px;
+      margin: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .intro-skip:hover,
+    .intro-skip:focus-visible{
+      color: var(--ink);
     }
 
     .intro-hint{
@@ -409,19 +419,16 @@ layout: null
       }
       .modal p.message{ font-size: 15px; }
     }
-  </style>
+</style>
 
-</head>
-
-<body>
-
-  <div class="intro-screen" id="introScreen" role="button" tabindex="0" aria-label="Tap to continue">
+<div class="intro-screen" id="introScreen" role="button" tabindex="0" aria-label="Tap to continue">
     <div class="intro-content">
       <p class="intro-text" id="introText"></p>
       <div class="intro-dots" id="introDots"></div>
       <div class="intro-footer">
         <button class="intro-back" id="introBack" type="button" aria-label="Go back">←</button>
         <p class="intro-hint" id="introHint">tap to continue</p>
+        <button class="intro-skip" id="introSkip" type="button" aria-label="Skip intro">skip to end</button>
       </div>
     </div>
   </div>
@@ -495,6 +502,7 @@ layout: null
     const introHint = document.getElementById('introHint');
     const introDots = document.getElementById('introDots');
     const introBack = document.getElementById('introBack');
+    const introSkip = document.getElementById('introSkip');
     let introIndex = 0;
 
     INTRO.forEach(() => {
@@ -532,7 +540,7 @@ layout: null
         introIndex = newIndex;
         renderIntro();
         introText.classList.remove('fade');
-      }, 220);
+      }, 150);
     }
 
     function advanceIntro(){
@@ -552,6 +560,11 @@ layout: null
     introBack.addEventListener('click', (e) => {
       e.stopPropagation();
       goBackIntro();
+    });
+
+    introSkip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      introScreen.classList.add('hidden');
     });
 
     introScreen.addEventListener('click', advanceIntro);
@@ -746,6 +759,3 @@ layout: null
       btn.style.transform = `rotate(${rotation}deg)`;
     });
   </script>
-
-</body>
-</html>
